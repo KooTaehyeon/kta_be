@@ -78,7 +78,7 @@ sequelize
   .then(() => console.log('All models were synchronized successfully.'))
   .catch((err) => console.error('Model synchronization failed:', err));
 
-app.use((err: Error, req, res, next) => {
+app.use((err: Error, req: any, res: any, next: any) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
@@ -87,5 +87,3 @@ server.listen(port, async () => {
   console.log(`http://localhost:${port}`);
   await startConsumer();
 });
-
-export default server;

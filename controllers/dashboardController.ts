@@ -131,66 +131,81 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       userCountsByDate,
       paymentAmountsByDate,
     ] = await Promise.all([
-      safeCount(db.User.count({
-        where: {
-          created_at: {
-            [Op.between]: [start.toISOString(), end.toISOString()],
+      safeCount(
+        db.User.count({
+          where: {
+            created_at: {
+              [Op.between]: [start.toISOString(), end.toISOString()],
+            },
           },
-        },
-      })),
+        })
+      ),
       safeCount(db.User.count()),
       safeCount(db.Feed.count()),
       safeCount(db.Influencer.count()),
-      safeCount(db.Feed.count({
-        where: {
-          created_at: {
-            [Op.between]: [start.toISOString(), end.toISOString()],
+      safeCount(
+        db.Feed.count({
+          where: {
+            created_at: {
+              [Op.between]: [start.toISOString(), end.toISOString()],
+            },
           },
-        },
-      })),
+        })
+      ),
       safeCount(db.Membership.count()),
-      safeCount(db.Influencer.findAll({
-        attributes: ['follower'],
-      })),
-      safeCount(db.Feed.findAll({
-        attributes: [
-          [db.sequelize.fn('DATE', db.sequelize.col('created_at')), 'date'],
-          [db.sequelize.fn('COUNT', db.sequelize.col('id')), 'count'],
-        ],
-        group: ['date'],
-        order: [['date', 'ASC']],
-      })),
-      safeCount(db.User.findAll({
-        attributes: [
-          [db.sequelize.fn('DATE', db.sequelize.col('created_at')), 'date'],
-          [db.sequelize.fn('COUNT', db.sequelize.col('id')), 'count'],
-        ],
-        group: ['date'],
-        order: [['date', 'ASC']],
-      })),
-      safeCount(db.Payment.findAll({
-        attributes: [
-          [db.sequelize.fn('DATE', db.sequelize.col('created_at')), 'date'],
-          [db.sequelize.fn('SUM', db.sequelize.col('amount')), 'amount'],
-        ],
-        group: ['date'],
-        order: [['date', 'ASC']],
-      })),
+      safeCount(
+        db.Influencer.findAll({
+          attributes: ['follower'],
+        })
+      ),
+      safeCount(
+        db.Feed.findAll({
+          attributes: [
+            [db.sequelize.fn('DATE', db.sequelize.col('created_at')), 'date'],
+            [db.sequelize.fn('COUNT', db.sequelize.col('id')), 'count'],
+          ],
+          group: ['date'],
+          order: [['date', 'ASC']],
+        })
+      ),
+      safeCount(
+        db.User.findAll({
+          attributes: [
+            [db.sequelize.fn('DATE', db.sequelize.col('created_at')), 'date'],
+            [db.sequelize.fn('COUNT', db.sequelize.col('id')), 'count'],
+          ],
+          group: ['date'],
+          order: [['date', 'ASC']],
+        })
+      ),
+      safeCount(
+        db.Payment.findAll({
+          attributes: [
+            [db.sequelize.fn('DATE', db.sequelize.col('created_at')), 'date'],
+            [db.sequelize.fn('SUM', db.sequelize.col('amount')), 'amount'],
+          ],
+          group: ['date'],
+          order: [['date', 'ASC']],
+        })
+      ),
     ]);
 
-    const followersArray = influencerFollowers
-      .map(influencer => {
+    const followersArray = influencerFollowers.map(
+      (influencer: { follower: string }) => {
         try {
           return JSON.parse(influencer.follower).map(Number);
         } catch {
           return [];
         }
-      });
+      }
+    );
 
     const allFollowers = [].concat(...followersArray);
     const minFollowers = allFollowers.length ? Math.min(...allFollowers) : 0;
     const maxFollowers = allFollowers.length ? Math.max(...allFollowers) : 0;
-    const avgFollowers = allFollowers.length ? allFollowers.reduce((sum, val) => sum + val, 0) / allFollowers.length : 0;
+    const avgFollowers = allFollowers.length
+      ? allFollowers.reduce((sum, val) => sum + val, 0) / allFollowers.length
+      : 0;
 
     res.json({
       todayUserCount,
@@ -209,7 +224,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       paymentAmountsByDate,
     });
   } catch (error) {
-    console.error("Error details:", error);
-    res.status(500).json({ error: '서버 오류', details: error.message });
+    console.error('Error details:', error);
+    res.status(500).json({ error: '서버 오류', details: error });
   }
 };
