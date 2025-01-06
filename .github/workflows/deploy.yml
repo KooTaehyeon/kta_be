@@ -1,0 +1,56 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main # main 브랜치에 push될 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # 프로젝트에서 사용하는 Node.js 버전에 맞춰 설정
+
+      # 3. Install dependencies and build
+      - name: Install dependencies
+        run: |
+          npm install
+          npm run build  # build 스크립트가 없는 경우 삭제 가능
+
+      # 4. Copy files to AWS EC2
+      - name: Deploy to AWS EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USER }}
+          key: ${{ secrets.AWS_EC2_KEY }}
+          source: './' # 현재 프로젝트 디렉토리
+          target: '/home/ec2-user/app' # EC2에서의 대상 디렉토리
+
+      # 5. SSH to EC2 and restart the application
+      - name: Restart Application
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USER }}
+          key: ${{ secrets.AWS_EC2_KEY }}
+          port: 22
+          script: |
+            # 애플리케이션 디렉토리로 이동
+            cd /home/ec2-user/app
+
+            # 기존 프로세스 종료
+            pm2 stop all || true
+
+            # 의존성 설치 및 애플리케이션 실행
+            npm install --production
+            pm2 start dist/index.js --name "my-app"
