@@ -38,7 +38,12 @@ if (process.env.MORGAN === 'true') {
 }
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'https://kta-fes.vercel.app',
+      'https://kta-admin-j6xdmwbve-kootaehyeons-projects.vercel.app/',
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   })

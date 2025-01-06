@@ -34,7 +34,7 @@ jobs:
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_EC2_KEY }}
           source: './' # 현재 프로젝트 디렉토리
-          target: '/home/ec2-user/app' # EC2에서의 대상 디렉토리
+          target: '/home/ubuntu/app' # EC2에서의 대상 디렉토리
 
       # 5. SSH to EC2 and restart the application
       - name: Restart Application
@@ -45,8 +45,11 @@ jobs:
           key: ${{ secrets.AWS_EC2_KEY }}
           port: 22
           script: |
+            # PM2가 설치되지 않았다면 설치
+            npm install pm2@latest -g
+
             # 애플리케이션 디렉토리로 이동
-            cd /home/ec2-user/app
+            cd /home/ubuntu/app
 
             # 기존 프로세스 종료
             pm2 stop all || true
