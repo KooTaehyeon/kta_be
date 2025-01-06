@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "outDir": "./dist", // 컴파일된 파일 저장 위치
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["**/*.ts"], // 컴파일할 파일 경로
+  "exclude": ["node_modules", "dist"] // 제외할 파일/폴더
+}
