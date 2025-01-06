@@ -88,6 +88,4 @@ server.listen(port, async () => {
   await startConsumer();
 });
 
-export default (req, res) => {
-  app(req, res);
-};
+export default server;

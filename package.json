@@ -5,9 +5,10 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec vite-node app.ts",
+    "dev": "nodemon --watch . --exec ts-node app.ts",
     "build": "tsc",
-    "start": "nodemon app.ts"
+    "start": "node dist/app.js",
+    "vercel-build": "tsc"
   },
   "type": "module",
   "keywords": [],
