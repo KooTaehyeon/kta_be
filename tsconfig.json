@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "CommonJS",
-    "outDir": "./dist", // 컴파일된 파일 저장 위치
+    "outDir": "dist", // 컴파일된 파일 저장 위치
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
