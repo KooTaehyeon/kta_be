@@ -33,7 +33,6 @@ const server = createServer(app);
 app.use(cookieParser());
 app.set('trust proxy', 1);
 
-
 if (process.env.MORGAN === 'true') {
   app.use(morgan('dev'));
 }
@@ -88,3 +87,7 @@ server.listen(port, async () => {
   console.log(`http://localhost:${port}`);
   await startConsumer();
 });
+
+export default (req, res) => {
+  app(req, res);
+};

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.ts", // Express 서버 파일 경로 (예: server.js)
+      "use": "@vercel/node" // Node.js 환경에서 실행
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)", // 모든 요청을 Express 서버로 전달
+      "dest": "app.ts" // server.js 파일로 요청 전달
+    }
+  ]
+}
