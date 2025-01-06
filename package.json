@@ -2,7 +2,7 @@
   "name": "kta_be",
   "version": "1.0.0",
   "description": "",
-  "main": "app.ts",
+  "main": "dist/app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec vite-node app.ts",
