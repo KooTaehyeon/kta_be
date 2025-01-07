@@ -14,11 +14,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 3. Install dependencies and build
+      # 2. Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.20.5' # 프로젝트에서 사용하는 Node.js 버전에 맞춰 설정
+
+      # 3. Install dependencies
       - name: Install dependencies
         run: |
-          npm install
-          npm run build  # build 스크립트가 없는 경우 삭제 가능
+          npm install  # build 없이 의존성만 설치
 
       # 4. Copy files to AWS EC2
       - name: Deploy to AWS EC2
@@ -40,14 +45,18 @@ jobs:
           port: 22
           script: |
             # PM2가 설치되지 않았다면 설치
-            npm install pm2@latest -g
+            if ! command -v pm2 &> /dev/null; then
+              npm install pm2@latest -g
+            fi
 
             # 애플리케이션 디렉토리로 이동
-            cd /home/ubuntu/app
+            cd /home/ubuntu/app || exit 1  # 실패 시 종료
 
             # 기존 프로세스 종료
             pm2 stop all || true
 
-            # 의존성 설치 및 애플리케이션 실행
+            # 의존성 설치 (production)
             npm install --production
-            pm2 start dist/index.js --name "my-app"
+
+            # 소스 파일 직접 실행 (빌드 과정 없이 바로 실행)
+            pm2 start src/index.js --name "my-app"  # src/index.js는 엔트리 파일에 맞게 수정
