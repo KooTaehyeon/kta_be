@@ -83,7 +83,7 @@ sequelize
   .then(() => console.log('All models were synchronized successfully.'))
   .catch((err) => console.error('Model synchronization failed:', err));
 
-app.use((err: Error, req: any, res: any, next: any) => {
+app.use((err: Error, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });

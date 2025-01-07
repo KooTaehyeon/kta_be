@@ -1,33 +1,18 @@
 import Payment from '../models/Payment';
 import confirmPayment from '../services/paymentsService';
 
-async function confirmPaymentController(req: any, res: any, next: any) {
+async function confirmPaymentController(req, res, next) {
   const confirmResponse = await confirmPayment(req.body);
 
   return res.json({ data: confirmResponse });
 }
 
-async function savePaymentInfoController(req: any, res: any, next: any) {
+async function savePaymentInfoController(req, res, next) {
   try {
-    const {
-      orderId,
-      userId,
-      productId,
-      orderName,
-      amount,
-      paymentMethod,
-      approvedAt,
-    } = req.body;
+    const { orderId, userId, productId, orderName, amount, paymentMethod, approvedAt } = req.body;
 
-    if (
-      !orderId ||
-      !userId ||
-      !productId ||
-      !orderName ||
-      !paymentMethod ||
-      !approvedAt
-    ) {
-      return res.status(400).json({ error: '필수 필드가 누락되었습니다.' });
+    if (!orderId || !userId || !productId || !orderName || !paymentMethod || !approvedAt) {
+      return res.status(400).json({ error: "필수 필드가 누락되었습니다." });
     }
 
     const newPayment = await Payment.create({
@@ -46,7 +31,7 @@ async function savePaymentInfoController(req: any, res: any, next: any) {
   }
 }
 
-async function getPaymentsController(req: any, res: any, next: any) {
+async function getPaymentsController(req, res, next) {
   try {
     const payments = await Payment.findAll();
     return res.json({ data: payments });
@@ -55,8 +40,4 @@ async function getPaymentsController(req: any, res: any, next: any) {
   }
 }
 
-export {
-  confirmPaymentController,
-  savePaymentInfoController,
-  getPaymentsController,
-};
+export { confirmPaymentController, savePaymentInfoController, getPaymentsController };

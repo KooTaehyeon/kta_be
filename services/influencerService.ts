@@ -1,8 +1,8 @@
-import { Influencer } from '../models/influencer';
-import { InfluencerApplication } from '../models/influencerApplication';
-import { User } from '../models/user';
-import { MembershipProduct } from '../models/membershipProduct';
-import { Room } from '../models/Room';
+import { Influencer } from "../models/influencer";
+import { InfluencerApplication } from "../models/influencerApplication";
+import { User } from "../models/user";
+import { MembershipProduct } from "../models/membershipProduct";
+import { Room } from "../models/room";
 
 export interface InfluencerData {
   id?: number; // 인플루언서 ID
@@ -18,7 +18,7 @@ export interface InfluencerApplicationData {
   category: string; // 신청한 카테고리
   banner_picture: string; // 배너 이미지 URL
   reason?: string | null; // 반려 사유 (반려 시에만 필요)
-  status?: 'pending' | 'approved' | 'rejected'; // 신청 상태
+  status?: "pending" | "approved" | "rejected"; // 신청 상태
   created_at?: Date; // 신청 생성 시각
   reviewed_at?: Date | null; // 검토된 시각
   reviewed_by?: number | null; // 검토를 수행한 관리자 ID
@@ -33,28 +33,28 @@ export const getInfluencerById = async (influencerId: number) => {
         {
           model: User,
           attributes: [
-            'id',
-            'username',
-            'email',
-            'about_me',
-            'profile_picture',
+            "id",
+            "username",
+            "email",
+            "about_me",
+            "profile_picture",
           ], // 필요한 사용자 정보만 가져오기
         },
       ],
-      attributes: ['id', 'follower', 'banner_picture', 'category'], // 필요한 인플루언서 정보만 가져오기
+      attributes: ["id", "follower", "banner_picture", "category"], // 필요한 인플루언서 정보만 가져오기
       raw: true,
       nest: true, // 중첩된 결과를 객체 형태로 반환
     });
     // console.log(influencers);
 
     if (!influencers) {
-      throw new Error('No influencer found');
+      throw new Error("No influencer found");
     }
 
     return influencers;
   } catch (error) {
-    console.error('Error fetching influencer:', error);
-    throw new Error('Error fetching influencer');
+    console.error("Error fetching influencer:", error);
+    throw new Error("Error fetching influencer");
   }
 };
 
@@ -66,28 +66,28 @@ export const getAllInfluencers = async () => {
         {
           model: User,
           attributes: [
-            'id',
-            'username',
-            'email',
-            'about_me',
-            'profile_picture',
+            "id",
+            "username",
+            "email",
+            "about_me",
+            "profile_picture",
           ], // 필요한 사용자 정보만 가져오기
         },
       ],
-      attributes: ['id', 'follower', 'banner_picture', 'category'], // 필요한 인플루언서 정보만 가져오기
+      attributes: ["id", "follower", "banner_picture", "category"], // 필요한 인플루언서 정보만 가져오기
       raw: true,
       nest: true, // 중첩된 결과를 객체 형태로 반환
     });
     // console.log(influencers);
 
     if (influencers.length === 0) {
-      throw new Error('No influencers found');
+      throw new Error("No influencers found");
     }
 
     return influencers;
   } catch (error) {
-    console.error('Error fetching influencers:', error);
-    throw new Error('Error fetching influencers');
+    console.error("Error fetching influencers:", error);
+    throw new Error("Error fetching influencers");
   }
 };
 
@@ -100,16 +100,16 @@ export const toggleFollow = async (userId: number, influencerId: number) => {
     });
 
     if (!influencer) {
-      throw new Error('Influencer not found');
+      throw new Error("Influencer not found");
     }
 
     // 팔로워 목록 파싱
     let followers: string[] = [];
     try {
-      const followerData = influencer.get('follower') as string; // 속성 가져오기
-      followers = JSON.parse(followerData || '[]');
+      const followerData = influencer.get("follower") as string; // 속성 가져오기
+      followers = JSON.parse(followerData || "[]");
     } catch (error) {
-      console.error('Error parsing followers:', error);
+      console.error("Error parsing followers:", error);
     }
 
     const userIdStr = userId.toString();
@@ -123,13 +123,13 @@ export const toggleFollow = async (userId: number, influencerId: number) => {
     }
 
     // `set` 메서드로 'follower' 속성 설정
-    influencer.set('follower', JSON.stringify(followers));
+    influencer.set("follower", JSON.stringify(followers));
     await influencer.save();
 
     return index === -1; // `true`면 팔로우, `false`면 언팔로우
   } catch (error) {
-    console.error('Error toggling follow:', error);
-    throw new Error('Error toggling follow');
+    console.error("Error toggling follow:", error);
+    throw new Error("Error toggling follow");
   }
 };
 
@@ -141,17 +141,17 @@ export const getFollowers = async (influencerId: number) => {
     });
 
     if (!influencer) {
-      throw new Error('Influencer not found');
+      throw new Error("Influencer not found");
     }
 
     // 팔로워 목록 가져오기
-    const followerData = influencer.get('follower') as string;
-    const followers = JSON.parse(followerData || '[]');
+    const followerData = influencer.get("follower") as string;
+    const followers = JSON.parse(followerData || "[]");
 
     return followers.map((id: string) => parseInt(id, 10)); // 숫자 배열로 반환
   } catch (error) {
-    console.error('Error fetching followers:', error);
-    throw new Error('Error fetching followers');
+    console.error("Error fetching followers:", error);
+    throw new Error("Error fetching followers");
   }
 };
 
@@ -161,8 +161,8 @@ export const createInfluencer = async (data: InfluencerData) => {
     const newInfluencer = await Influencer.create(data);
     return newInfluencer;
   } catch (error) {
-    console.error('Error creating influencer:', error);
-    throw new Error('Error creating influencer');
+    console.error("Error creating influencer:", error);
+    throw new Error("Error creating influencer");
   }
 };
 
@@ -174,7 +174,7 @@ export const deleteInfluencer = async (influencerId: number) => {
     });
 
     if (!influencer) {
-      throw new Error('Influencer not found');
+      throw new Error("Influencer not found");
     }
 
     // 멤버십 제품 삭제
@@ -190,8 +190,8 @@ export const deleteInfluencer = async (influencerId: number) => {
     await influencer.destroy();
     return influencer;
   } catch (error) {
-    console.error('Error deleting influencer:', error);
-    throw new Error('Error deleting influencer');
+    console.error("Error deleting influencer:", error);
+    throw new Error("Error deleting influencer");
   }
 };
 
@@ -204,37 +204,37 @@ export const getInfluencerByuserId = async (userId: number) => {
         {
           model: User,
           attributes: [
-            'id',
-            'username',
-            'email',
-            'about_me',
-            'profile_picture',
+            "id",
+            "username",
+            "email",
+            "about_me",
+            "profile_picture",
           ], // 필요한 사용자 정보만 가져오기
         },
       ],
-      attributes: ['id', 'follower', 'banner_picture', 'category'], // 필요한 인플루언서 정보만 가져오기
+      attributes: ["id", "follower", "banner_picture", "category"], // 필요한 인플루언서 정보만 가져오기
     });
     if (!influencers) {
-      throw new Error('No influencer found');
+      throw new Error("No influencer found");
     }
 
     return influencers;
   } catch (error) {
-    console.error('Error fetching influencer:', error);
-    throw new Error('Error fetching influencer');
+    console.error("Error fetching influencer:", error);
+    throw new Error("Error fetching influencer");
   }
 };
 
 export const createInfluencerApplication = async (
-  data: InfluencerApplicationData
+  data: InfluencerApplicationData,
 ) => {
   try {
     const existingApplication = await InfluencerApplication.findOne({
-      where: { user_id: data.user_id, status: 'pending' },
+      where: { user_id: data.user_id, status: "pending" },
     });
 
     if (existingApplication) {
-      throw new Error('You already have a pending application.');
+      throw new Error("You already have a pending application.");
     }
 
     const newApplication = await InfluencerApplication.create({
@@ -244,8 +244,8 @@ export const createInfluencerApplication = async (
     });
     return newApplication;
   } catch (error) {
-    console.error('Error creating influencer application:', error);
-    throw new Error('Error creating influencer application');
+    console.error("Error creating influencer application:", error);
+    throw new Error("Error creating influencer application");
   }
 };
 
@@ -255,31 +255,31 @@ export const getInfluencerApplications = async () => {
       include: [
         {
           model: User,
-          attributes: ['id', 'username', 'email'],
+          attributes: ["id", "username", "email"],
         },
       ],
     });
     return applications;
   } catch (error) {
-    console.error('Error fetching influencer applications:', error);
-    throw new Error('Error fetching influencer applications');
+    console.error("Error fetching influencer applications:", error);
+    throw new Error("Error fetching influencer applications");
   }
 };
 
 export const approveInfluencerApplication = async (
   applicationId: number,
-  adminId: number
+  adminId: number,
 ) => {
   const application = await InfluencerApplication.findOne({
-    where: { id: applicationId, status: 'pending' },
+    where: { id: applicationId, status: "pending" },
   });
 
   if (!application) {
-    throw new Error('Application not found or already processed.');
+    throw new Error("Application not found or already processed.");
   }
 
   // 승인 처리
-  application.status = 'approved';
+  application.status = "approved";
   application.reviewed_at = new Date();
   application.reviewed_by = adminId;
   await application.save();
@@ -303,25 +303,25 @@ export const approveInfluencerApplication = async (
   const defaultProducts = [
     {
       level: 1,
-      name: '레벨 1 멤버십',
+      name: "레벨 1 멤버십",
       price: 0, // 무료 멤버십
-      benefits: '기본 혜택',
+      benefits: "기본 혜택",
       is_active: 0,
       influencer_id: influencer.id,
     },
     {
       level: 2,
-      name: '레벨 2 멤버십',
+      name: "레벨 2 멤버십",
       price: 5000, // 예: 5,000원
-      benefits: '추가 혜택',
+      benefits: "추가 혜택",
       is_active: 0,
       influencer_id: influencer.id,
     },
     {
       level: 3,
-      name: '레벨 3 멤버십',
+      name: "레벨 3 멤버십",
       price: 10000, // 예: 10,000원
-      benefits: '최고 혜택',
+      benefits: "최고 혜택",
       is_active: 0,
       influencer_id: influencer.id,
     },
@@ -335,18 +335,18 @@ export const approveInfluencerApplication = async (
 export const rejectInfluencerApplication = async (
   applicationId: number,
   adminId: number,
-  reason: string
+  reason: string,
 ) => {
   const application = await InfluencerApplication.findOne({
-    where: { id: applicationId, status: 'pending' },
+    where: { id: applicationId, status: "pending" },
   });
 
   if (!application) {
-    throw new Error('Application not found or already processed.');
+    throw new Error("Application not found or already processed.");
   }
 
   // 반려 처리
-  application.status = 'rejected';
+  application.status = "rejected";
   application.reason = reason;
   application.reviewed_at = new Date();
   application.reviewed_by = adminId;
@@ -354,15 +354,15 @@ export const rejectInfluencerApplication = async (
 };
 
 export const getPendingApplicationByUserId = async (
-  userId: number
+  userId: number,
 ): Promise<boolean> => {
   try {
     const application = await InfluencerApplication.findOne({
-      where: { user_id: userId, status: 'pending' },
+      where: { user_id: userId, status: "pending" },
     });
     return !!application; // true if a pending application exists
   } catch (error) {
-    console.error('Error fetching pending application:', error);
-    throw new Error('Error fetching pending application');
+    console.error("Error fetching pending application:", error);
+    throw new Error("Error fetching pending application");
   }
 };
