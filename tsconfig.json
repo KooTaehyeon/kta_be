@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
+    "target": "ES6", // ES6로 변환
+    "module": "ESNext", // ESM(ES Module) 사용
     "outDir": "./dist", // 컴파일된 파일 저장 위치
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "strict": true, // 엄격한 타입 검사
+    "esModuleInterop": true, // CommonJS와 ESM 간의 호환성 제공
+    "skipLibCheck": true, // 라이브러리 타입 검사 생략
+    "moduleResolution": "node", // 노드 방식의 모듈 해석 방식을 사용
+    "resolveJsonModule": true // JSON 파일을 모듈로 해석
   },
   "include": ["**/*.ts"], // 컴파일할 파일 경로
   "exclude": ["node_modules", "dist"] // 제외할 파일/폴더

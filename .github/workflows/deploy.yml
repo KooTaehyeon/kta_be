@@ -58,5 +58,11 @@ jobs:
             # 의존성 설치 (production)
             npm install --production
 
-            # 소스 파일 직접 실행 (빌드 과정 없이 바로 실행)
-            pm2 start src/index.js --name "my-app"  # src/index.js는 엔트리 파일에 맞게 수정
+            # .env 파일을 EC2 서버로 복사
+            cp /home/ubuntu/app/.env /home/ubuntu/app/.env
+
+            # 애플리케이션 실행 (빌드 없이 바로 실행)
+            pm2 start src/index.js --name "my-app"  # 엔트리 파일에 맞게 수정 (예: src/index.js)
+
+            # PM2에서 애플리케이션의 상태 확인
+            pm2 list
