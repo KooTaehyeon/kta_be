@@ -25,7 +25,35 @@ jobs:
         run: |
           npm install  # build 없이 의존성만 설치
 
-      # 4. Copy files to AWS EC2
+      # 4. Create .env file from GitHub Secrets
+      - name: Create .env file
+        run: |
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" > .env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
+          echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> .env
+          echo "AWS_BUCKET_FOLDER_NAME=${{ secrets.AWS_BUCKET_FOLDER_NAME }}" >> .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "DB_ID=${{ secrets.DB_ID }}" >> .env
+          echo "DB_PW=${{ secrets.DB_PW }}" >> .env
+          echo "dialect=mysql" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> .env
+          echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
+          echo "KAKAO_CALLBACK_URL=${{ secrets.KAKAO_CALLBACK_URL }}" >> .env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+          echo "GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }}" >> .env
+          echo "TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}" >> .env
+          echo "TOSS_SECURITY_KEY=${{ secrets.TOSS_SECURITY_KEY }}" >> .env
+          echo "BASE_URL=${{ secrets.BASE_URL }}" >> .env
+          echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
+          echo "BACKEND_URL=${{ secrets.BACKEND_URL }}" >> .env
+          echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> .env
+          echo "RABBITMQ_QUEUE=${{ secrets.RABBITMQ_QUEUE }}" >> .env
+
+      # 5. Copy files to AWS EC2
       - name: Deploy to AWS EC2
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -35,7 +63,7 @@ jobs:
           source: './' # 현재 프로젝트 디렉토리
           target: '/home/ubuntu/app' # EC2에서의 대상 디렉토리
 
-      # 5. SSH to EC2 and restart the application
+      # 6. SSH to EC2 and restart the application
       - name: Restart Application
         uses: appleboy/ssh-action@v0.1.8
         with:
